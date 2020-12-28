@@ -1,19 +1,23 @@
 package com.sideki.vkfriends.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sideki.vkfriends.R
-import com.sideki.vkfriends.models.FriendModel
+import com.sideki.vkfriends.models.VKUser
 import kotlinx.android.synthetic.main.item_friend.view.*
 
-class FriendsAdapter(private val context: Context) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
+class FriendsAdapter(private val context: Context) :
+    RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
 
-    private var mFriendsList = mutableListOf<FriendModel>()
-    private var mSourceList = mutableListOf<FriendModel>()
+    private val TAG:String = "TAG"
+
+    private var mFriendsList = mutableListOf<VKUser>()
+    private var mSourceList = mutableListOf<VKUser>()
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -25,26 +29,26 @@ class FriendsAdapter(private val context: Context) : RecyclerView.Adapter<Friend
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val curItem = mFriendsList[position]
 
-        Glide.with(context).load(curItem.avatar).centerCrop()
+        Glide.with(context).load(curItem.photo).centerCrop()
             .into(holder.itemView.friend_civ_avatar)
 
-        val name = curItem.name
-        val surname = curItem.surname
+        val name = curItem.firstName
+        val surname = curItem.lastName
         val username = "$name $surname"
         holder.itemView.friend_txt_username.text = username
 
-        when (curItem.city) {
-            null -> holder.itemView.friend_txt_city.text = "Город не указан"
-            else -> holder.itemView.friend_txt_city.text = curItem.city
+        //holder.itemView.friend_txt_city.text = curItem.city
+
+        if (curItem.isOnline == 1) {
+            holder.itemView.friend_img_online.visibility = View.VISIBLE
+        }else{
+            holder.itemView.friend_img_online.visibility = View.GONE
         }
 
-        when (curItem.isOnline) {
-            true -> holder.itemView.friend_img_online.visibility = View.VISIBLE
-            false -> holder.itemView.friend_img_online.visibility = View.GONE
-        }
+        Log.d(TAG, " Онлайн - ${curItem.isOnline}")
     }
 
-    fun setupFriendsList(friendList: List<FriendModel>) {
+    fun setupFriendsList(friendList: List<VKUser>) {
         this.mFriendsList.clear()
         this.mSourceList.addAll(friendList)
         filter("")
@@ -53,14 +57,18 @@ class FriendsAdapter(private val context: Context) : RecyclerView.Adapter<Friend
     fun filter(query: String) {
         mFriendsList.clear()
         mSourceList.forEach {
-            if (it.name.contains(query, ignoreCase = true) || it.surname.contains(query, ignoreCase = true)) {
+            if (it.firstName.contains(query, ignoreCase = true) || it.lastName.contains(
+                    query,
+                    ignoreCase = true
+                )
+            ) {
                 mFriendsList.add(it)
             } else {
-                it.city?.let { city ->
+/*                it.city?.let { city ->
                     if (city.contains(query, ignoreCase = true)) {
                         mFriendsList.add(it)
                     }
-                }
+                }*/
             }
         }
         notifyDataSetChanged()

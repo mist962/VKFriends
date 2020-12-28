@@ -7,9 +7,12 @@ import android.widget.Toast
 import com.sideki.vkfriends.R
 import com.sideki.vkfriends.presenters.LoginPresenter
 import com.sideki.vkfriends.views.LoginView
+import com.vk.api.sdk.VK
+import com.vk.api.sdk.auth.VKScope
 import kotlinx.android.synthetic.main.activity_main.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
+
 
 class LoginActivity : MvpAppCompatActivity(), LoginView {
 
@@ -21,7 +24,13 @@ class LoginActivity : MvpAppCompatActivity(), LoginView {
         setContentView(R.layout.activity_main)
 
         btn_login_enter.setOnClickListener {
-            loginPresenter.login(true)
+            VK.login(this, arrayListOf(VKScope.FRIENDS))
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!loginPresenter.loginVk(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 

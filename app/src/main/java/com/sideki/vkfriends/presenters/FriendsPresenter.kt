@@ -1,7 +1,7 @@
 package com.sideki.vkfriends.presenters
 
 import com.sideki.vkfriends.R
-import com.sideki.vkfriends.models.FriendModel
+import com.sideki.vkfriends.models.VKUser
 import com.sideki.vkfriends.providers.FriendsProvider
 import com.sideki.vkfriends.views.FriendsView
 import moxy.InjectViewState
@@ -12,10 +12,10 @@ class FriendsPresenter : MvpPresenter<FriendsView>() {
 
     fun loadFriends() {
         viewState.startLoading()
-        FriendsProvider(this).testLoadFriends(true)
+        FriendsProvider(this).loadFriends()
     }
 
-    fun friendsLoaded(friendsList: List<FriendModel>) {
+    fun friendsLoaded(friendsList: List<VKUser>) {
         viewState.endLoading()
         if (friendsList.isEmpty()) {
             viewState.setupEmptyList()
@@ -25,8 +25,9 @@ class FriendsPresenter : MvpPresenter<FriendsView>() {
         }
     }
 
-    fun showError(textResource: Int) {
-        viewState.showError(textResource = textResource)
+    fun showError(){
+        viewState.showError(R.string.friends_error_loading)
     }
+
 
 }

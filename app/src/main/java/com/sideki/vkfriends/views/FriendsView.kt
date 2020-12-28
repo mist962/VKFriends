@@ -1,6 +1,6 @@
 package com.sideki.vkfriends.views
 
-import com.sideki.vkfriends.models.FriendModel
+import com.sideki.vkfriends.models.VKUser
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
@@ -9,7 +9,7 @@ import moxy.viewstate.strategy.StateStrategyType
 interface FriendsView : MvpView {
     fun showError(textResource: Int)
     fun setupEmptyList()
-    fun setupFriendsList(friendsList: List<FriendModel>)
+    fun setupFriendsList(friendsList: List<VKUser>)
     fun startLoading()
     fun endLoading()
 }
